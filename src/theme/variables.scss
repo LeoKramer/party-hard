@@ -41,6 +41,16 @@ $colors: (
   dark:       #222
 );
 
+// Colors for app toolbar
+$toolbar-background: black;
+$toolbar-text-color: white;
+
+// Colors for tabs
+$tabs-background: black;
+$tabs-md-tab-icon-color-active: white;
+$tabs-md-tab-text-color-active: white;
+$tabs-md-tab-icon-color: rgb(128,128,128);
+$tabs-md-tab-text-color: rgb(128,128,128);
 
 // App iOS Variables
 // --------------------------------------------------
