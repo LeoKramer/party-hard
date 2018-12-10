@@ -5,5 +5,15 @@
 </ion-header>
 
 <ion-content padding>
-  <button ion-button color="dark" full (click)="facebookLogin()">Logar com o Facebook</button>
+  <div *ngIf="notLogged">
+    <button ion-button color="dark" full (click)="facebookLogin()">Logar com o Facebook</button>
+  </div>
+  <ion-card *ngIf="userData">
+      <ion-card-header>{{ userData.username }}</ion-card-header>
+      <img [src]="userData.picture" />
+      <ion-card-content>
+        <p>Email: {{ userData.email }}</p>
+        <p>First Name: {{ userData.first_name }}</p>
+      </ion-card-content>
+  </ion-card>
 </ion-content>
