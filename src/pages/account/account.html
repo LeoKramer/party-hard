@@ -5,15 +5,26 @@
 </ion-header>
 
 <ion-content padding>
-  <div *ngIf="notLogged">
-    <button ion-button color="dark" full (click)="facebookLogin()">Logar com o Facebook</button>
+  <div ng-if="logged == false">
+    <button ion-button color="dark" full (click)="testStorage()">Logar com o Facebook</button>
   </div>
   <ion-card *ngIf="userData">
-      <ion-card-header>{{ userData.username }}</ion-card-header>
-      <img [src]="userData.picture" />
+      <img id="user-picture" [src]="userData.picture" />
       <ion-card-content>
+        <ion-card-title>
+            {{ userData.username }}
+        </ion-card-title>
         <p>Email: {{ userData.email }}</p>
-        <p>First Name: {{ userData.first_name }}</p>
+        <p>Facebook Token: {{ facebookAccessToken }}</p>
+        <p>Firebase Token: {{ firebaseAccessToken }}</p>
       </ion-card-content>
+      <ion-row no-padding>
+        <ion-col text-right>
+            <button ion-button clear small color="danger" icon-start>
+                <ion-icon name='log-out'></ion-icon>
+                Deslogar
+            </button>
+        </ion-col>
+      </ion-row>
   </ion-card>
 </ion-content>

@@ -12,8 +12,10 @@ import { TabsPage } from '../pages/tabs/tabs';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
-import { IonicStorageModule } from '@ionic/storage';
+import { FirebaseAuthentication } from '@ionic-native/firebase-authentication';
 import { Facebook } from '@ionic-native/facebook';
+import { Toast } from '@ionic-native/toast';
+import { NativeStorage } from '@ionic-native/native-storage';
 
 @NgModule({
   declarations: [
@@ -29,10 +31,6 @@ import { Facebook } from '@ionic-native/facebook';
     IonicModule.forRoot(MyApp, {
       tabsHideOnSubPages: true
     }),
-    IonicStorageModule.forRoot({
-      name: '__mydb',
-         driverOrder: ['indexeddb', 'sqlite', 'websql']
-    })
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -47,7 +45,10 @@ import { Facebook } from '@ionic-native/facebook';
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    Facebook
+    Facebook,
+    FirebaseAuthentication,
+    Toast,
+    NativeStorage
   ]
 })
 export class AppModule {}
