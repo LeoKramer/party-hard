@@ -13,27 +13,12 @@ export class AccountPage {
   logged = false;
   userData: any;
   facebookAccessToken: string;
-  firebaseAccessToken: string;
+
+  // variaveis para modificacao do html
+  hideLoginButton = false;
 
   constructor(public navCtrl: NavController, public fb: Facebook, private firebaseAuthentication: FirebaseAuthentication, private storage: NativeStorage, private toast: Toast) {
-    /*storage.getItem("logged")
-    .then((data) => {
-      if(data != null) {
-        var checklogged: string = data['value'];
-        if(checklogged == "true") {
-          this.notLogged = false;
-        } else if (checklogged == "false") {
-          this.notLogged = true;
-        }
-      } else {
-        this.notLogged = true;
-      }
-
-      if(!this.notLogged) {
-        this.retrieveUserData();
-      }
-    })
-    */
+    this.updateLoggedStatus();
   }
 
   facebookLogin() {
@@ -41,22 +26,21 @@ export class AccountPage {
     .then((res: FacebookLoginResponse) => {
       // salvar o token de acesso do facebook
       this.facebookAccessToken = res.authResponse.accessToken;
-      //this.storage.set("facebookAccessToken", res.authResponse.accessToken);
+      console.log(this.facebookAccessToken)
+      this.storage.setItem("facebookAccessToken", res.authResponse.accessToken);
       
       // salvar os dados do usuario
       this.fb.api('me?fields=id,name,email,picture.width(720).height(720).as(picture_large)', []).then(profile => {
         this.userData = {username: profile['name'], email: profile['email'], picture: profile['picture_large']['data']['url']};
-        //this.storageUserData(profile['email'], profile['picture_large']['data']['url'], profile['name'])
+        this.storageUserData(profile['email'], profile['picture_large']['data']['url'], profile['name']);
       });
 
-      /*
       //salvar o token de acesso do firebase
       this.firebaseAuthentication.signInWithFacebook(this.facebookAccessToken)
-      .then((res: any) => {
-        this.storage.set("firebaseAccesToken", res.accessToken)
-        this.firebaseAccessToken = res.accessToken;
-        this.notLogged = false;
-        this.storage.set("logged", "true")
+      .then(() => {
+        this.logged = true;
+        this.hideLoginButton = true;
+        this.storage.setItem("logged", "true")
         this.toast.show('Login realizado com sucesso', '5000', 'center').subscribe(
           toast => {
             console.log(toast);
@@ -70,7 +54,6 @@ export class AccountPage {
           }
         );
       });
-      */
     });
   }
 
@@ -81,7 +64,7 @@ export class AccountPage {
   }
 
   retrieveUserData() {
-    if(this.logged)
+    if(!this.logged)
       return;
 
     this.storage.getItem("username")
@@ -103,7 +86,15 @@ export class AccountPage {
   updateLoggedStatus() {
     this.storage.getItem('logged')
     .then(
-      data => console.log(data),
+      data => {
+        if(data == "false") {
+          console.log(data)
+          this.logged = false;
+        } else if(data == "true") {
+          this.logged = true;
+          this.retrieveUserData();
+        }
+      },
       // primeira vez irá disparar um erro
       error => this.storage.setItem('logged', 'false').then( () => this.logged = false)
     );

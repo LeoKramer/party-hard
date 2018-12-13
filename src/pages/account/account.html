@@ -5,18 +5,16 @@
 </ion-header>
 
 <ion-content padding>
-  <div ng-if="logged == false">
-    <button ion-button color="dark" full (click)="testStorage()">Logar com o Facebook</button>
+  <div *ngIf="hideLoginButton">
+    <button ion-button color="dark" full (click)="facebookLogin()">Logar com o Facebook</button>
   </div>
   <ion-card *ngIf="userData">
       <img id="user-picture" [src]="userData.picture" />
       <ion-card-content>
-        <ion-card-title>
+        <ion-card-title align-items-center>
             {{ userData.username }}
         </ion-card-title>
         <p>Email: {{ userData.email }}</p>
-        <p>Facebook Token: {{ facebookAccessToken }}</p>
-        <p>Firebase Token: {{ firebaseAccessToken }}</p>
       </ion-card-content>
       <ion-row no-padding>
         <ion-col text-right>
