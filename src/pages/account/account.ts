@@ -15,7 +15,7 @@ export class AccountPage {
   facebookAccessToken: string;
 
   // variaveis para modificacao do html
-  hideLoginButton = false;
+  showLoginButton = true;
 
   constructor(public navCtrl: NavController, public fb: Facebook, private firebaseAuthentication: FirebaseAuthentication, private storage: NativeStorage, private toast: Toast) {
     this.updateLoggedStatus();
@@ -26,7 +26,6 @@ export class AccountPage {
     .then((res: FacebookLoginResponse) => {
       // salvar o token de acesso do facebook
       this.facebookAccessToken = res.authResponse.accessToken;
-      console.log(this.facebookAccessToken)
       this.storage.setItem("facebookAccessToken", res.authResponse.accessToken);
       
       // salvar os dados do usuario
@@ -38,8 +37,8 @@ export class AccountPage {
       //salvar o token de acesso do firebase
       this.firebaseAuthentication.signInWithFacebook(this.facebookAccessToken)
       .then(() => {
+        this.showLoginButton = false;
         this.logged = true;
-        this.hideLoginButton = true;
         this.storage.setItem("logged", "true")
         this.toast.show('Login realizado com sucesso', '5000', 'center').subscribe(
           toast => {
@@ -54,6 +53,8 @@ export class AccountPage {
           }
         );
       });
+    }, (error) => {
+      console.log(error);
     });
   }
 
@@ -67,19 +68,22 @@ export class AccountPage {
     if(!this.logged)
       return;
 
+    var username: string;
+    var useremail: string;
+    var userpicture:string;
+
     this.storage.getItem("username")
     .then((data) => {
-      this.userData['username'] = data;
-    })
-
-    this.storage.getItem("useremail")
-    .then((data) => {
-      this.userData['email'] = data;
-    })
-
-    this.storage.getItem("userpicture")
-    .then((data) =>{
-      this.userData['picture'] = data;
+      username = data;
+      this.storage.getItem("useremail")
+      .then((data) => {
+        useremail = data;
+        this.storage.getItem("userpicture")
+        .then((data) =>{
+          userpicture = data;
+          this.userData = {username: username, email: useremail, picture: userpicture};
+        })
+      })
     })
   }
 
@@ -88,15 +92,30 @@ export class AccountPage {
     .then(
       data => {
         if(data == "false") {
-          console.log(data)
           this.logged = false;
+          this.showLoginButton = true;
         } else if(data == "true") {
           this.logged = true;
+          this.showLoginButton = false;
           this.retrieveUserData();
         }
       },
       // primeira vez irá disparar um erro
-      error => this.storage.setItem('logged', 'false').then( () => this.logged = false)
+      error => this.storage.setItem('logged', 'false').then( () => {
+        this.logged = false
+        this.showLoginButton = true;
+      })
     );
+  }
+
+  logout() {
+    this.firebaseAuthentication.signOut();
+    this.fb.logout();
+    this.logged = false;
+    this.userData = null;
+    this.storage.setItem("logged", "false")
+    .then(() => {
+      this.showLoginButton = true;
+    })
   }
 }

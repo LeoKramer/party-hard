@@ -5,20 +5,20 @@
 </ion-header>
 
 <ion-content padding>
-  <div *ngIf="hideLoginButton">
+  <div *ngIf="showLoginButton">
     <button ion-button color="dark" full (click)="facebookLogin()">Logar com o Facebook</button>
   </div>
-  <ion-card *ngIf="userData">
+  <ion-card *ngIf="logged">
       <img id="user-picture" [src]="userData.picture" />
-      <ion-card-content>
-        <ion-card-title align-items-center>
+      <ion-card-content class="center-text">
+        <ion-card-title>
             {{ userData.username }}
         </ion-card-title>
         <p>Email: {{ userData.email }}</p>
       </ion-card-content>
       <ion-row no-padding>
         <ion-col text-right>
-            <button ion-button clear small color="danger" icon-start>
+            <button ion-button clear small color="danger" icon-start (click)="logout()">
                 <ion-icon name='log-out'></ion-icon>
                 Deslogar
             </button>
